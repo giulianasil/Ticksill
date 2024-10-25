@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticksil</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+
+        /* Cabeçalho */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 1em;
+            background-color: #4A90E2;
+            color: white;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin-left: 10px;
+            font-size: 1.5em;
+        }
+
+        .icons .icon {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        /* Barra Lateral */
+        .sidebar {
+            width: 250px;
+            background: #333;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            height: 100%;
+            transition: 0.3s;
+            padding: 2em 1em;
+            z-index: 1000;
+            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+        }
+
+        .sidebar-toggle,
+        .close-btn {
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+
+        /* Carrinho */
+        .cart {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            background: #fdfdfd;
+            width: 300px;
+            height: 100%;
+            padding: 20px;
+            box-shadow: -5px 0 5px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+            color: #333;
+            z-index: 1000;
+        }
+
+        .cart h2 {
+            margin-bottom: 20px;
+        }
+
+        .cart ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .cart button {
+            background: #4A90E2;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        /* Tickets */
+        main {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2em;
+            margin-top: 2em;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .tickets {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .tickets h2 {
+            color: #4A90E2;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+
+        .ticket {
+            padding: 1em;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            width: calc(30% - 20px);
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .ticket:hover {
+            transform: scale(1.05);
+        }
+
+        .ticket img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* Perfil */
+        #profile-section {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: #f4f4f4;
+            padding: 20px;
+            box-shadow: -5px 0 5px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            color: #333;
+        }
+
+        #profile-section h2 {
+            margin-bottom: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .cart, #profile-section {
+                width: 250px;
+            }
+
+            .ticket {
+                width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .ticket {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra lateral -->
+    <aside id="sidebar" class="sidebar">
+        <button onclick="toggleSidebar()" class="close-btn">&times;</button>
+        <h2>Categorias</h2>
+        <ul>
+            <li><a href="#shows">Shows</a></li>
+            <li><a href="#teatro">Teatro</a></li>
+            <li><a href="#esportes">Esportes</a></li>
+        </ul>
+    </aside>
+
+    <!-- Cabeçalho -->
+    <header>
+        <button onclick="toggleSidebar()" class="sidebar-toggle">&#9776;</button>
+        <h1>Ticksil</h1>
+        <div class="icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/3106/3106807.png" alt="Perfil" class="icon" onclick="viewProfile()">
+            <img src="https://cdn-icons-png.flaticon.com/512/6713/6713723.png" alt="Carrinho" class="icon" onclick="viewCart()">
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main>
+        <!-- Seção de Shows -->
+        <section id="shows" class="tickets">
+            <h2>Shows</h2>
+            <div class="ticket">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmlqPUHHb2QKFhvlrkTM5O8erWvk4nLVZOJg&s" alt="Show Bruno Mars & Lady Gaga">
+                <h3>Show Bruno Mars & Lady Gaga</h3>
+                <p>Preço: R$550,00</p>
+                <button onclick="addToCart('Show Bruno Mars & Lady Gaga', 550)">Adicionar ao Carrinho</button>
+            </div>
+            <div class="ticket">
+                <img src="https://cdn.folhape.com.br/img/c/1200/900/dn_arquivo/2022/09/whatsapp-image-2022-09-04-at-181908.jpeg" alt="Show Justin Bieber">
+                <h3>Show Justin Bieber</h3>
+                <p>Preço: R$290,00</p>
+                <button onclick="addToCart('Show Justin Bieber', 290)">Adicionar ao Carrinho</button>
+            </div>
+            <div class="ticket">
+                <img src="https://jpimg.com.br/uploads/2023/03/age20230310113-675x450.jpg" alt="Show Coldplay">
+                <h3>Show Coldplay</h3>
+                <p>Preço: R$650,00</p>
+                <button onclick="addToCart('Show Coldplay', 650)">Adicionar ao Carrinho</button>
+            </div>
+        </section>
+
+        <!-- Seção de Teatro -->
+        <section id="teatro" class="tickets">
+            <h2>Teatro</h2>
+            <div class="ticket">
+                <img src="https://static.wixstatic.com/media/9ec13a_6d7ba5c4511f4dbe8a68c22c29819e12~mv2.jpg/v1/fill/w_308,h_444,al_c,lg_1,q_80/9ec13a_6d7ba5c4511f4dbe8a68c22c29819e12~mv2.jpg" alt="Peça Hamlet">
+                <h3>Peça Romeu e julieta</h3>
+                <p>Preço: R$80,00</p>
+                <button onclick="addToCart('Peça Hamlet', 80)">Adicionar ao Carrinho</button>
+            </div>
+            <div class="ticket">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg50DvccZYzMBG4bD9p7dJ0YEEZGlQzDsKjQ&s" alt="Peça O Rei Leão">
+                <h3>Peça O Rei Leão</h3>
+                <p>Preço: R$120,00</p>
+                <button onclick="addToCart('Peça O Rei Leão', 120)">Adicionar ao Carrinho</button>
+            </div>
+            <div class="ticket">
+                <img src="https://p2.trrsf.com/image/fget/cf/774/0/images.terra.com/2023/09/19/188086262-327087-matilda-the-musical-march-2022-cast-team-2-2022-rt-scaled-1.jpg" alt="Peça A Morte de um Caixeiro Viajante">
+                <h3>Peça Matilda</h3>
+                <p>Preço: R$150,00</p>
+                <button onclick="addToCart('Matilda', 150)">Adicionar ao Carrinho</button>
+            </div>
+        </section>
+
+        <!-- Seção de Esportes -->
+        <section id="esportes" class="tickets">
+            <h2>Esportes</h2>
+            <div class="ticket">
+                <img src="https://www.umdoisesportes.com.br/media/umdoisesportes/2024/06/12214923/Montagens-GERAIS-52.jpg" alt="Jogo de Futebol">
+                <h3>Jogo de Futebol</h3>
+                <p>Preço: R$150,00</p>
+                <button onclick="addToCart('Jogo de Futebol', 150)">Adicionar ao Carrinho</button>
+            </div>
+            <div class="ticket">
+                <img src="https://p2.trrsf.com/image/fget/cf/774/0/images.terra.com/2024/08/06/805018216-huertas-arremessando-vs-eua-1280x853.jpg" alt="Jogo de Basquete">
+                <h3>Jogo de Basquete</h3>
+                <p>Preço: R$180,00</p>
+                <button onclick="addToCart('Jogo de Basquete', 180)">Adicionar ao Carrinho</button>
+            </div>
+            <div class="ticket">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9IWMo9LpDHezTK8jeAaUJI8RHc91gLSiyUQ&s" alt="Luta de MMA">
+                <h3>Luta de MMA</h3>
+                <p>Preço: R$250,00</p>
+                <button onclick="addToCart('Luta de MMA', 250)">Adicionar ao Carrinho</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Seção do Carrinho -->
+    <div id="cart" class="cart">
+        <h2>Carrinho</h2>
+        <ul id="cart-items"></ul>
+        <button onclick="checkout()">Finalizar Compra</button>
+        <button onclick="closeCart()">Fechar</button>
+    </div>
+
+    <!-- Seção de Perfil -->
+    <div id="profile-section">
+        <h2>Perfil do Usuário</h2>
+        <p>Nome: Usuário 1</p>
+        <p>Email: estudantecultoaciencia@exemplo.com</p>
+        <button onclick="closeProfile()">Fechar</button>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.style.left = sidebar.style.left === '0px' ? '-250px' : '0px';
+        }
+
+        function addToCart(itemName, price) {
+            const cartItems = document.getElementById('cart-items');
+            const newItem = document.createElement('li');
+            newItem.textContent = `${itemName} - R$${price.toFixed(2)}`;
+            cartItems.appendChild(newItem);
+        }
+
+        function viewCart() {
+            const cart = document.getElementById('cart');
+            cart.style.right = '0';
+        }
+
+        function closeCart() {
+            const cart = document.getElementById('cart');
+            cart.style.right = '-300px';
+        }
+
+        function viewProfile() {
+            const profile = document.getElementById('profile-section');
+            profile.style.display = 'block';
+        }
+
+        function closeProfile() {
+            const profile = document.getElementById('profile-section');
+            profile.style.display = 'none';
+        }
+
+        function checkout() {
+            alert('Compra finalizada!');
+        }
+    </script>
+</body>
+</html>
